@@ -22,7 +22,7 @@ def SeqAnalysis (seq_str):
 
 
 #open input file and read content into array
-input_file = open("input.txt", "r")
+input_file = open("../data/input.txt", "r")
 lines = input_file.readlines()
 prA = float((lines[0]))
 prC = float((lines[1]))
