@@ -88,12 +88,12 @@ def main(inputFile, target, F):
                     numSad += 1
             if target == "HAPPY":
                 if numHappy / (numHappy + numSad) >= F:
-                    print(r)
+                    print(",".join(x.sequence for x in r))
             if target == "SAD":
                 if numSad / (numHappy + numSad) >= F:
-                    print(r)
+                    print(",".join(x.sequence for x in r))
             if target == "ALL":
-                print(r)
+                print(",".join(x.sequence for x in r))
 
 #----------------------------------------------------------------
 if (len(sys.argv) == 1):
