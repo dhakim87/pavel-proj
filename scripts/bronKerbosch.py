@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+import sys
 #input .graph
 #output .cliques
 
@@ -42,11 +42,11 @@ def intersect(setA, setB):
             finalSet.append(key)
     return set(finalSet)
 
-def BronKerbosch(R, P, X):
+def BronKerbosch(R, P, X, results):
     if len(P) == 0 and len(X) == 0:
-        print(R)
+        results.append(R)
     for v in list(P):
-        BronKerbosch(union(R, setof(v)), intersect(P, neighbors(v)), intersect(X, neighbors(v)))
+        BronKerbosch(union(R, setof(v)), intersect(P, neighbors(v)), intersect(X, neighbors(v)), results)
         P = difference(P, setof(v))
         X = union(X, setof(v))
 
@@ -56,18 +56,57 @@ def neighbors(n):
         neigh.add(nn)
     return neigh;
 
-with open("../data/Sample.graph") as f:
-    data = f.read().splitlines()
-    delimeter = data.index("---")
-    
-    nodes = [Node(x.split(", ")[0], x.split(", ")[1]) for i,x in data[:delimeter]]
-    edges = [(int(x.split(" -> ")[0]), int(x.split(" -> ")[1])) for x in data[delimeter+1:]]
-    
-    for e in edges:
-        nodes[e[0]].addEdge(nodes[e[1]]) #TODO Check that adam is sending nodes in both directions.
-    
-    R = set([])
-    P = set(nodes)
-    X = set([])
+def main(inputFile, target, F):
+    with open("../data/test.graph") as f:
+        data = f.read().splitlines()
+        delimeter = data.index("---")
+        
+        nodes = [Node(x.split(", ")[0], x.split(", ")[1]) for x in data[:delimeter]]
+        nodeMap = {}
+        for n in nodes:
+            nodeMap[n.sequence] = n
+        
+        edges = [(x.split(", ")[0], x.split(", ")[1]) for x in data[delimeter+1:]]
+        
+        for e in edges:
+            nodeMap[e[0]].addEdge(nodeMap[e[1]]) #TODO Check that adam is sending nodes in both directions.
+        
+        R = set([])
+        P = set(nodes)
+        X = set([])
 
-    BronKerbosch(R, P, X)
+        results = []
+        BronKerbosch(R, P, X, results)
+
+        for r in results:
+            numHappy = 0
+            numSad = 0
+            for n in r:
+                if n.happysad == "H":
+                    numHappy += 1
+                if n.happysad == "S":
+                    numSad += 1
+            if target == "HAPPY":
+                if numHappy / (numHappy + numSad) >= F:
+                    print(r)
+            if target == "SAD":
+                if numSad / (numHappy + numSad) >= F:
+                    print(r)
+            if target == "ALL":
+                print(r)
+
+#----------------------------------------------------------------
+if (len(sys.argv) == 1):
+    print("Usage: ")
+    print("python " + sys.argv[0] + " <pathToInput.graph> <target> <F Ratio>")
+    print("Ex: python " + sys.argv[0] + " ../data/test.graph HAPPY .8")
+    print("Ex: python " + sys.argv[0] + " ../data/test.graph SAD .8")
+    print("Ex: python " + sys.argv[0] + " ../data/test.graph ALL")
+else:
+    inputFile = sys.argv[1]
+    target = sys.argv[2]
+    F = None
+    if target != "ALL":
+        F = float(sys.argv[3])
+
+    main(inputFile, target, F)
