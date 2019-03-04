@@ -159,6 +159,6 @@ def printGraph(sequences, seqGraph, filename):
 
     return
     
-sequences = readData("../data/HFSample.txt")
-graph = createGraph(sequences, K=10)
-printGraph(sequences, graph, "../data/test.graph")
+sequences = readData("../data/output_tagged.txt")
+graph = createGraph(sequences, K=20)
+printGraph(sequences, graph, "../data/sim_data.graph")
