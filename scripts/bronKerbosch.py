@@ -57,7 +57,7 @@ def neighbors(n):
     return neigh;
 
 def main(inputFile, target, F):
-    with open("../data/test.graph") as f:
+    with open(inputFile) as f:
         data = f.read().splitlines()
         delimeter = data.index("---")
         
