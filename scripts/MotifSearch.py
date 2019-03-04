@@ -1,8 +1,9 @@
 ### INPUT: LIST OF CLIQUES FROM BRON-KERBOSCH ALGORITHM
 ### OUTPUT: LIST OF MOTIFS FOR EACH CLIQUE
 
-
 import re
+import time
+start = time.time()
 
 #from BA1I import Neighbors, HammingDistance, FirstSymbol, Suffix, PatternToNumber, Quotient, Remainder, NumberToPattern
 #from BA1H import *
@@ -131,19 +132,35 @@ def MotifEnumeration(clique, k, d):
 
 def main():
 
-    with open('Sample.cliques') as f:
+    with open('sim_data_HAPPY_CLIQUES.cliques') as f:
 
-    #f = open('cliques.txt','r')
         all = f.readlines()
 
         all = [x.strip('\n') for x in all]
 
     k = 6
-    d = 2
+    d = 0
+    # enumerate motifs for each clique
     for i in range(len(all)):
         line = all[i]
         clique = re.split(',', line)
         print ('Clique {}: {}'.format(i+1, MotifEnumeration(clique, k, d)))
+    end = time.time()
+    print(end - start)
+
+    # enumerate common motifs across all cliques
+    lst_motifs = []
+    for i in range(len(all)):
+        line = all[i]
+        clique = re.split(',', line)
+        lst_motifs.append(MotifEnumeration(clique, k, d))
+    # remove empty lists in lst_motifs
+    lst_motifs_final = [x for x in lst_motifs if x != []]
+    # set(lst_motifs_final[0]).intersection(*lst_motifs_final)
+    common_motifs = set(lst_motifs_final[0])
+    for lst in lst_motifs_final[1:]:
+        common_motifs.intersection_update(lst)
+    print ((common_motifs))
 
 
 main()
