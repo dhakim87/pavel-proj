@@ -3,7 +3,6 @@
 
 import re
 import time
-start = time.time()
 
 #from BA1I import Neighbors, HammingDistance, FirstSymbol, Suffix, PatternToNumber, Quotient, Remainder, NumberToPattern
 #from BA1H import *
@@ -130,9 +129,8 @@ def MotifEnumeration(clique, k, d):
     return motifs
 
 
-def main():
-
-    with open('sim_data_HAPPY_CLIQUES.cliques') as f:
+def main(filename):
+    with open(filename) as f:
 
         all = f.readlines()
 
@@ -145,8 +143,6 @@ def main():
         line = all[i]
         clique = re.split(',', line)
         print ('Clique {}: {}'.format(i+1, MotifEnumeration(clique, k, d)))
-    end = time.time()
-    print(end - start)
 
     # enumerate common motifs across all cliques
     lst_motifs = []
@@ -162,5 +158,4 @@ def main():
         common_motifs.intersection_update(lst)
     print ((common_motifs))
 
-
-main()
+#main('sim_data_HAPPY_CLIQUES.cliques')

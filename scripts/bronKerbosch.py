@@ -56,7 +56,7 @@ def neighbors(n):
         neigh.add(nn)
     return neigh;
 
-def main(inputFile, target, F):
+def main(inputFile, outputFile, target, F):
     with open(inputFile) as f:
         data = f.read().splitlines()
         delimeter = data.index("---")
@@ -78,6 +78,7 @@ def main(inputFile, target, F):
         results = []
         BronKerbosch(R, P, X, results)
 
+    with open(outputFile, "w") as outF:
         for r in results:
             numHappy = 0
             numSad = 0
@@ -88,25 +89,25 @@ def main(inputFile, target, F):
                     numSad += 1
             if target == "HAPPY":
                 if numHappy / (numHappy + numSad) >= F:
-                    print(",".join(x.sequence for x in r))
+                    outF.write(",".join(x.sequence for x in r))
             if target == "SAD":
                 if numSad / (numHappy + numSad) >= F:
-                    print(",".join(x.sequence for x in r))
+                    outF.write(",".join(x.sequence for x in r))
             if target == "ALL":
-                print(",".join(x.sequence for x in r))
+                outF.write(",".join(x.sequence for x in r))
 
 #----------------------------------------------------------------
-if (len(sys.argv) == 1):
-    print("Usage: ")
-    print("python " + sys.argv[0] + " <pathToInput.graph> <target> <F Ratio>")
-    print("Ex: python " + sys.argv[0] + " ../data/test.graph HAPPY .8")
-    print("Ex: python " + sys.argv[0] + " ../data/test.graph SAD .8")
-    print("Ex: python " + sys.argv[0] + " ../data/test.graph ALL")
-else:
-    inputFile = sys.argv[1]
-    target = sys.argv[2]
-    F = None
-    if target != "ALL":
-        F = float(sys.argv[3])
-
-    main(inputFile, target, F)
+#if (len(sys.argv) == 1):
+#    print("Usage: ")
+#    print("python " + sys.argv[0] + " <pathToInput.graph> <target> <F Ratio>")
+#    print("Ex: python " + sys.argv[0] + " ../data/test.graph HAPPY .8")
+#    print("Ex: python " + sys.argv[0] + " ../data/test.graph SAD .8")
+#    print("Ex: python " + sys.argv[0] + " ../data/test.graph ALL")
+#else:
+#    inputFile = sys.argv[1]
+#    target = sys.argv[2]
+#    F = None
+#    if target != "ALL":
+#        F = float(sys.argv[3])
+#
+#    main(inputFile, target, F)

@@ -4,7 +4,6 @@
 import networkx as nx
 
 def hammingDistance(p, q):
-    
     dist = 0
     # loop through each char and see if they match
     for i in range(len(p)):
@@ -15,7 +14,6 @@ def hammingDistance(p, q):
 
 # finds the edit distance between two strings
 def editDist(v, w):
-    
     distance = 0
     backtrack, s = editAlign(v, w)
     newV, newW = outputEdit(backtrack, v, w)
@@ -158,7 +156,10 @@ def printGraph(sequences, seqGraph, filename):
         f.write(e[0] + ", " + e[1]+ "\n")
 
     return
-    
-sequences = readData("../data/output_tagged.txt")
-graph = createGraph(sequences, K=20)
-printGraph(sequences, graph, "../data/sim_data.graph")
+
+def main(inputFile, outputFile, k):
+    sequences = readData(inputFile)
+    graph = createGraph(sequences, K=k)
+    printGraph(sequences, graph, outputFile)
+
+#main("../data/output_tagged.txt", "../data/sim_data.graph", 20)
