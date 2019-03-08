@@ -19,6 +19,8 @@ def editDist(v, w):
     newV, newW = outputEdit(backtrack, v, w)
     distance = hammingDistance(newV, newW)
     
+    
+    
     return distance
 
 

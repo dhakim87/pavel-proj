@@ -13,8 +13,6 @@ import MotifSearch
 HAPPYORSAD = "HAPPY"
 CLIQUES_FILE = "../data/sim_data_" + HAPPYORSAD + "_CLIQUES.cliques"
 
-
-
 ### NucSimul:
     # input: input.txt (parameters for nuc sim)
     # output: output_happy.txt, output_sad.txt
