@@ -71,15 +71,16 @@ def getKmers(seq, kmerLen):
     return kmers
 
 def addEdgesToGraphWithHashing(seqGraph, seqList, prefixLen, K):
+    #TODO FIXME HACK:  Can probably hash in a more biologically relevant way...  Maybe take first and second letters of codons and ignore third or something.
+
     #First, make a dictionary from kmer to list of sequence by writing the kmers of length 10 in the prefix of length X of each sequence to a dictionary.  We can tweak this by changing k, it should come out to prefix len divided by k + 1 is our kmer length.  We want a kmer length that is larger to prevent matching everyting all the time.
 
     matchmap = defaultdict(list)
     kmerLen = prefixLen // (K + 1)
     
-    if kmerLen <= 5:
-        print("Kmers too short, falling back to pairwise implementation.")
-        addEdgesToGraph(seqGraph, seqList, K)
-        return;
+    if kmerLen < 10:
+        print("WARNING:genes too short to guarantee matches of length 10, we may lose real matches (but come on... are these really biologically relevant?)")
+        kmerLen = 10;
     
     shortSeqs = []
     midLenSeqs = []
@@ -99,16 +100,16 @@ def addEdgesToGraphWithHashing(seqGraph, seqList, prefixLen, K):
 
     seqL = longSeqs
     
-    print("Making Match Map");
+#    print("Making Match Map");
     for seqIndex in range(len(seqL)):
         seq = seqL[seqIndex]
-        prefixSeq = seqL[seqIndex][:prefixLen]
+        prefixSeq = seq[:min(prefixLen, len(seq))]
         for kmer in getKmers(prefixSeq, kmerLen):
             matchmap[kmer].append(seqIndex)
-    print("Match Map Created");
+#    print("Match Map Created");
 
     for seqIndex in range(len(seqL)):
-        print(str(seqIndex));
+#        print(str(seqIndex));
         toCheck = set([])
         prefixSeq = seqL[seqIndex][:prefixLen]
         for kmer in getKmers(prefixSeq, kmerLen):
@@ -116,7 +117,7 @@ def addEdgesToGraphWithHashing(seqGraph, seqList, prefixLen, K):
                 if match != toCheck:
                     toCheck.add(match)
 
-        print("Matches: " + str(len(toCheck)))
+#        print("Matches: " + str(len(toCheck)))
         # skip itself
         seq = seqL[seqIndex]
         for matchIndex in toCheck:

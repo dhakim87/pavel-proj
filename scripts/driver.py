@@ -10,9 +10,11 @@ import produceGraph
 import bronKerbosch
 import MotifSearch
 import levenshtein
+import filterCliques
 
-HAPPYORSAD = "HAPPY"
+HAPPYORSAD = "ALL"
 CLIQUES_FILE = "../data/real_data_" + HAPPYORSAD + "_CLIQUES.cliques"
+CLIQUES_FILE_FILTERED = "../data/real_data_" + HAPPYORSAD + "_CLIQUES_SIZE_2.cliques"
 FORMAT_INPUT_H = "../Real_Data/Fixed/Happy/Anaerotruncus_colihominis_FIXED.txt"
 FORMAT_INPUT_S = "../Real_Data/Fixed/Sad/Alistipes_inops_FIXED.txt"
 
@@ -75,6 +77,9 @@ def runBronKerbosch():
 def runMotifSearch():
     MotifSearch.main(CLIQUES_FILE)
 
+def runFilterCliques():
+    filterCliques.filterByCount(CLIQUES_FILE, CLIQUES_FILE_FILTERED, 2)
+
 def main():
     print("Simulator");
     runNucSimul();
@@ -86,6 +91,9 @@ def main():
     runBronKerbosch();
     print("Searching for motifs");
     runMotifSearch();
+    print("Filtering cliques by size");
+    runFilterCliques();
+    
     pass;
 
 main()

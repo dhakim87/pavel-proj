@@ -131,9 +131,7 @@ def MotifEnumeration(clique, k, d):
 
 def main(filename):
     with open(filename) as f:
-
         all = f.readlines()
-
         all = [x.strip('\n') for x in all]
 
     k = 6

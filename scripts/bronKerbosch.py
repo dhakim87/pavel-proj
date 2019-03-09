@@ -106,6 +106,7 @@ def main(inputFile, outputFile, target, F):
     median = cliqueSizes[len(cliqueSizes)//2];
     print("Median Clique Size: " + str(median));
     print("Mean clique size: " + str(sum(cliqueSizes)/len(cliqueSizes)));
+    print("Max clique size: " + str(max(cliqueSizes)))
 
 #----------------------------------------------------------------
 #if (len(sys.argv) == 1):
