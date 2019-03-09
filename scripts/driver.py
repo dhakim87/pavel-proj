@@ -9,9 +9,12 @@ import NucSimul
 import produceGraph
 import bronKerbosch
 import MotifSearch
+import levenshtein
 
 HAPPYORSAD = "HAPPY"
-CLIQUES_FILE = "../data/sim_data_" + HAPPYORSAD + "_CLIQUES.cliques"
+CLIQUES_FILE = "../data/real_data_" + HAPPYORSAD + "_CLIQUES.cliques"
+FORMAT_INPUT_H = "../Real_Data/Fixed/Happy/Anaerotruncus_colihominis_FIXED.txt"
+FORMAT_INPUT_S = "../Real_Data/Fixed/Sad/Alistipes_inops_FIXED.txt"
 
 ### NucSimul:
     # input: input.txt (parameters for nuc sim)
@@ -36,7 +39,7 @@ def runNucSimul():
 ### formats the inputs for the produceGraph.py script
 def runFormatInputs():
     # adds the tags for the happy file
-    file = open("output_happy.txt", 'r')
+    file = open(FORMAT_INPUT_H, 'r')
     genes = list()
     
     # takes each line and adds a happy tag
@@ -44,7 +47,7 @@ def runFormatInputs():
         genes.append(line[:-1] + ", H")
 
     # adds the tags for the sad file.
-    file = open("output_sad.txt", 'r')
+    file = open(FORMAT_INPUT_S, 'r')
 
     # takes each line and adds a sad tag
     for line in file:
@@ -58,10 +61,7 @@ def runFormatInputs():
 
 ### produceGraph
 def runProduceGraph():
-    sequences = produceGraph.readData("../data/output_tagged.txt")
-    graph = produceGraph.createGraph(sequences, K=20)
-    input_for_bK = produceGraph.printGraph(sequences, graph, "../data/sim_data.graph")
-    return input_for_bK
+    produceGraph.main("../data/output_tagged.txt", "../data/sim_data.graph", 20)
 
 ### produce cliques -- need to fix bronKerbosch code!!!
 def runBronKerbosch():
@@ -76,10 +76,15 @@ def runMotifSearch():
     MotifSearch.main(CLIQUES_FILE)
 
 def main():
+    print("Simulator");
     runNucSimul();
+    print("Format inputs");
     runFormatInputs();
+    print("making Graph");
     runProduceGraph();
+    print("Bron Kerbosching");
     runBronKerbosch();
+    print("Searching for motifs");
     runMotifSearch();
     pass;
 

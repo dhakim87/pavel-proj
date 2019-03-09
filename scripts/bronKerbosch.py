@@ -57,8 +57,10 @@ def neighbors(n):
     return neigh;
 
 def main(inputFile, outputFile, target, F):
+    cliqueSizes = []
     with open(inputFile) as f:
         data = f.read().splitlines()
+        print("Num Genes: " + str(len(data)))
         delimeter = data.index("---")
         
         nodes = [Node(x.split(", ")[0], x.split(", ")[1]) for x in data[:delimeter]]
@@ -90,11 +92,20 @@ def main(inputFile, outputFile, target, F):
             if target == "HAPPY":
                 if numHappy / (numHappy + numSad) >= F:
                     outF.write(",".join(x.sequence for x in r))
+                    cliqueSizes.append(len(r))
             if target == "SAD":
                 if numSad / (numHappy + numSad) >= F:
                     outF.write(",".join(x.sequence for x in r))
+                    cliqueSizes.append(len(r))
             if target == "ALL":
                 outF.write(",".join(x.sequence for x in r))
+                cliqueSizes.append(len(r))
+
+    print("Num Cliques: " + str(len(cliqueSizes)));
+    cliqueSizes.sort()
+    median = cliqueSizes[len(cliqueSizes)//2];
+    print("Median Clique Size: " + str(median));
+    print("Mean clique size: " + str(sum(cliqueSizes)/len(cliqueSizes)));
 
 #----------------------------------------------------------------
 #if (len(sys.argv) == 1):

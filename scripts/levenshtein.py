@@ -1,10 +1,11 @@
 #Daniel Hakim
-def compute(A, B, maxDist):
+def compute(A, B, maxDist = -1):
     w = len(A)
     h = len(B)
 
-    if abs(w - h) >= maxDist + 1:
-        return maxDist + 1
+    if (maxDist > 0):
+        if abs(w - h) >= maxDist + 1:
+            return maxDist + 1
 
     #Initial row of the array
     row = []
@@ -27,7 +28,9 @@ def compute(A, B, maxDist):
             newRow[x] = val
             minVal = min(minVal, val)
 
-        if minVal > maxDist:
-            return maxDist + 1
+        if (maxDist > 0):
+            if minVal > maxDist:
+                return maxDist + 1
         row = newRow
     return row[-1]
+
