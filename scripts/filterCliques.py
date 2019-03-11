@@ -6,4 +6,5 @@ def filterByCount(inputFile, outputFile, minCount):
         for line in all:
             if len(line.split(",")) >= minCount:
                 f.write(line);
+                f.write("\n")
 

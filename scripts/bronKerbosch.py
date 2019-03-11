@@ -1,5 +1,6 @@
 from collections import defaultdict
 import sys
+import levenshtein
 #input .graph
 #output .cliques
 
@@ -99,9 +100,13 @@ def main(inputFile, outputFile, target, F):
         edges = [(x.split(", ")[0], x.split(", ")[1]) for x in data[delimeter+1:]]
         
         for e in edges:
+            n1 = nodeMap[e[0]]
+            n2 = nodeMap[e[1]]
             #TODO Check that adam is sending nodes in both directions.
-            nodeMap[e[0]].addEdge(nodeMap[e[1]])
-            nodeMap[e[1]].addEdge(nodeMap[e[0]])
+            n1.addEdge(n2)
+            n2.addEdge(n1)
+            if abs(len(n1.sequence) - len(n2.sequence)) > 20:
+                print("WTF");
     
         connectedComponents = getConnectedComponents(nodes)
         componentSizeCounts = defaultdict(int)
@@ -130,8 +135,11 @@ def main(inputFile, outputFile, target, F):
                     numHappy += 1
                 if n.happysad == "S":
                     numSad += 1
-            if numHappy + numSad >= 6:
+            if numHappy + numSad >= 8:
                 print("Clique Size: " + str(numHappy + numSad) + " Happy: " + str(numHappy) + " Sad: " + str(numSad));
+                print("Representative Sequences:")
+                for n in r:
+                    print(n.sequence[30:60])
             if target == "HAPPY":
                 if numHappy / (numHappy + numSad) >= F:
                     outF.write(",".join(x.sequence for x in r))
