@@ -1,6 +1,5 @@
 from collections import defaultdict
 import sys
-import levenshtein
 #input .graph
 #output .cliques
 
@@ -115,7 +114,7 @@ def main(inputFile, outputFile, target, F):
     
         print("Number Of Connected Components: " + str(len(connectedComponents)))
         print("Connected Component Size Distribution: ")
-        for size in componentSizeCounts:
+        for size in sorted(list(componentSizeCounts)):
             print("\tSize: " + str(size) + " Count: " + str(componentSizeCounts[size]))
 
 
@@ -135,7 +134,7 @@ def main(inputFile, outputFile, target, F):
                     numHappy += 1
                 if n.happysad == "S":
                     numSad += 1
-            if numHappy + numSad >= 8:
+            if numHappy + numSad >= 4:
                 print("Clique Size: " + str(numHappy + numSad) + " Happy: " + str(numHappy) + " Sad: " + str(numSad));
                 print("Representative Sequences:")
                 for n in r:
