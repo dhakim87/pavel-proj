@@ -14,9 +14,26 @@ import filterCliques
 
 HAPPYORSAD = "ALL"
 CLIQUES_FILE = "../data/real_data_" + HAPPYORSAD + "_CLIQUES.cliques"
-CLIQUES_FILE_FILTERED = "../data/real_data_" + HAPPYORSAD + "_CLIQUES_SIZE_2.cliques"
-FORMAT_INPUT_H = "../Real_Data/Fixed/Happy/Anaerotruncus_colihominis_FIXED.txt"
-FORMAT_INPUT_S = "../Real_Data/Fixed/Sad/Alistipes_inops_FIXED.txt"
+CLIQUES_FILE_FILTERED = "../data/" + HAPPYORSAD + "_filtered.txt"
+FORMAT_INPUT_H =["../Real_Data/Fixed/Happy/Anaerotruncus_colihominis_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/Dialister_invisus_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/Escherichia_coli_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/FaeHaemophilus_parainfluenzae_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/Faecalibacterium_prausnitzii_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/Pasteurellaceae_bacterium_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/Peptostreptococcaceae_bacterium_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/Ruminococcus_albus_FIXED.txt",
+                 "../Real_Data/Fixed/Happy/uminococcus_bicirculans_FIXED.txt"]
+
+FORMAT_INPUT_S = ["../Real_Data/Fixed/Sad/Alistipes_inops_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Clostridium_sporogenes_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Erysipelotrichaceae_bacterium_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Flavonifractor_plautii_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Hafnia_alvei_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Klebsiella_pneumoniae_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Mucinivorans_hirudinis_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Parabacteroides_distasonis_FIXED.txt",
+                  "../Real_Data/Fixed/Sad/Porphyromonadaceae_bacterium_FIXED.txt"]
 
 ### NucSimul:
     # input: input.txt (parameters for nuc sim)
@@ -41,19 +58,21 @@ def runNucSimul():
 ### formats the inputs for the produceGraph.py script
 def runFormatInputs():
     # adds the tags for the happy file
-    file = open(FORMAT_INPUT_H, 'r')
     genes = list()
     
-    # takes each line and adds a happy tag
-    for line in file:
-        genes.append(line[:-1] + ", H")
+    fileIndex = 0  #TODO FIXME HACK:  Pass metadata with each gene through the system.
+    for filename in FORMAT_INPUT_H:
+        file = open(filename, 'r')
+        # takes each line and adds a happy tag
+        for line in file:
+            genes.append(line[:-1] + ", H")
 
-    # adds the tags for the sad file.
-    file = open(FORMAT_INPUT_S, 'r')
-
-    # takes each line and adds a sad tag
-    for line in file:
-        genes.append(line[:-1] + ", S")
+    for filename in FORMAT_INPUT_S:
+        # adds the tags for the sad file.
+        file = open(filename, 'r')
+        # takes each line and adds a sad tag
+        for line in file:
+            genes.append(line[:-1] + ", S")
 
     # outputs to a new file with newlines
     file2 = open("../data/output_tagged.txt", 'w')
@@ -78,7 +97,7 @@ def runMotifSearch():
     MotifSearch.main(CLIQUES_FILE)
 
 def runFilterCliques():
-    filterCliques.filterByCount(CLIQUES_FILE, CLIQUES_FILE_FILTERED, 2)
+    filterCliques.filterByCount(CLIQUES_FILE, CLIQUES_FILE_FILTERED, 12)
 
 def main():
     print("Simulator");
@@ -93,7 +112,6 @@ def main():
     runMotifSearch();
     print("Filtering cliques by size");
     runFilterCliques();
-    
     pass;
 
 main()
