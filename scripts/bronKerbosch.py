@@ -4,7 +4,8 @@ import sys
 #output .cliques
 
 class Node:
-    def __init__(self, sequence, happysad):
+    def __init__(self, id, sequence, happysad):
+        self.id = id
         self.edges = set([])
         self.happysad = happysad
         self.sequence = sequence
@@ -56,6 +57,27 @@ def neighbors(n):
         neigh.add(nn)
     return neigh;
 
+def getConnectedComponents(allNodes):
+    visited = set([])
+    
+    connectedSets = []
+    toVisit = []
+    for n in allNodes:
+        if n.id in visited:
+            continue
+        connectedSet = set([])
+        toVisit.append(n)
+        while len(toVisit) > 0:
+            curNode = toVisit.pop()
+            if curNode.id in visited:
+                continue
+            visited.add(curNode.id)
+            connectedSet.add(curNode)
+            for e in curNode.edges:
+                toVisit.append(e)
+        connectedSets.append(connectedSet)
+    return connectedSets
+
 def main(inputFile, outputFile, target, F):
     cliqueSizes = []
     with open(inputFile) as f:
@@ -63,7 +85,13 @@ def main(inputFile, outputFile, target, F):
         print("Num Genes: " + str(len(data)))
         delimeter = data.index("---")
         
-        nodes = [Node(x.split(", ")[0], x.split(", ")[1]) for x in data[:delimeter]]
+        nodeGen = 0
+        nodes = []
+        for x in data[:delimeter]:
+            ab = x.split(", ")
+            nodes.append(Node(nodeGen, ab[0], ab[1]))
+            nodeGen += 1
+        
         nodeMap = {}
         for n in nodes:
             nodeMap[n.sequence] = n
@@ -71,14 +99,27 @@ def main(inputFile, outputFile, target, F):
         edges = [(x.split(", ")[0], x.split(", ")[1]) for x in data[delimeter+1:]]
         
         for e in edges:
-            nodeMap[e[0]].addEdge(nodeMap[e[1]]) #TODO Check that adam is sending nodes in both directions.
-        
-        R = set([])
-        P = set(nodes)
-        X = set([])
+            #TODO Check that adam is sending nodes in both directions.
+            nodeMap[e[0]].addEdge(nodeMap[e[1]])
+            nodeMap[e[1]].addEdge(nodeMap[e[0]])
+    
+        connectedComponents = getConnectedComponents(nodes)
+        componentSizeCounts = defaultdict(int)
+        for comp in connectedComponents:
+            componentSizeCounts[len(comp)] += 1
+    
+        print("Number Of Connected Components: " + str(len(connectedComponents)))
+        print("Connected Component Size Distribution: ")
+        for size in componentSizeCounts:
+            print("\tSize: " + str(size) + " Count: " + str(componentSizeCounts[size]))
+
 
         results = []
-        BronKerbosch(R, P, X, results)
+        for component in connectedComponents:
+            R = set([])
+            P = component
+            X = set([])
+            BronKerbosch(R, P, X, results)
 
     with open(outputFile, "w") as outF:
         for r in results:
@@ -89,6 +130,8 @@ def main(inputFile, outputFile, target, F):
                     numHappy += 1
                 if n.happysad == "S":
                     numSad += 1
+            if numHappy + numSad >= 6:
+                print("Clique Size: " + str(numHappy + numSad) + " Happy: " + str(numHappy) + " Sad: " + str(numSad));
             if target == "HAPPY":
                 if numHappy / (numHappy + numSad) >= F:
                     outF.write(",".join(x.sequence for x in r))
