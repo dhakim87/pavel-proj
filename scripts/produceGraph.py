@@ -6,6 +6,8 @@ import networkx as nx
 from collections import defaultdict
 import bkTree
 
+MIN_MATCH_LEN = 10
+
 # finds the edit distance between two strings
 def editDistLevenshtein(v, w, maxDist):
     #Heuristic: We assume the vast majority of the time, edit distance will be greater than max dist,
@@ -78,9 +80,9 @@ def addEdgesToGraphWithHashing(seqGraph, seqList, prefixLen, K):
     matchmap = defaultdict(list)
     kmerLen = prefixLen // (K + 1)
     
-    if kmerLen < 10:
-        print("WARNING:genes too short to guarantee matches of length 10, we may lose real matches (but come on... are these really biologically relevant?)")
-        kmerLen = 10;
+    if kmerLen < MIN_MATCH_LEN:
+        print("WARNING:genes too short to guarantee matches of length " +str(MIN_MATCH_LEN) +", we may lose real matches (but come on... are these really biologically relevant?)")
+        kmerLen = MIN_MATCH_LEN;
     
     shortSeqs = []
     midLenSeqs = []
