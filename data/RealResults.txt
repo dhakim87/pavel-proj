@@ -1,0 +1,36 @@
+### SmallerDataset Results, k = 20, F = 0.5
+Bron Kerbosching
+Num Genes: 1802
+Num Cliques: 1800
+Median Clique Size: 1
+Mean clique size: 1.0005555555555556
+Max clique size: 2
+Filtering cliques by size
+
+### SmallerDataset Results, k = 25, F = 0.5
+Bron Kerbosching
+Num Genes: 1803
+Num Cliques: 1799
+Median Clique Size: 1
+Mean clique size: 1.0005555555555556
+Max clique size: 2
+Filtering cliques by size
+
+
+### SmallerDataset Results, k = 10,15, F = 0.5
+Bron Kerbosching
+Num Genes: 1801
+Num Cliques: 1800
+Median Clique Size: 1
+Mean clique size: 1.0005555555555556
+Max clique size: 1
+Filtering cliques by size
+
+### All Happy + All Sad Results, k = 20 (runtime ~ 1hr), F = 0.5
+Bron Kerbosching
+Num Genes: 55712
+Num Cliques: 55057
+Median Clique Size: 1
+Mean clique size: 1.000873640004577075
+Max clique size: 5
+Filtering cliques by size
