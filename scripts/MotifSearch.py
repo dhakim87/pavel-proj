@@ -3,18 +3,16 @@
 
 import re
 import time
-
+import random
 #from BA1I import Neighbors, HammingDistance, FirstSymbol, Suffix, PatternToNumber, Quotient, Remainder, NumberToPattern
 #from BA1H import *
+#EMBEDDED_MOTIFS = ['AGG', 'ACC', 'ACCCCA','ATTT','ATTTA', 'AGTTTA']
 
 def Suffix(Pattern):
 
     return Pattern[1:]
-
 def FirstSymbol(Pattern):
     return Pattern[0]
-
-
 def Neighbors(Pattern, d):
 
     shortest_neighbors = ['A', 'C', 'G', 'T']
@@ -35,7 +33,6 @@ def Neighbors(Pattern, d):
             concat_FirstSymbol = FirstSymbol(Pattern)+neighbor
             Neighborhood.append(concat_FirstSymbol)
     return Neighborhood
-
 def PatternToNumber(Pattern):
 
     SymbolToNumber = {'A':0, 'C':1, 'G':2, 'T':3} #make dict mapping nucleotides to numbers
@@ -48,14 +45,10 @@ def PatternToNumber(Pattern):
         Prefix = Pattern[:-1]
 
     return 4 * PatternToNumber(Prefix) + SymbolToNumber[symbol]
-
 def Quotient(index, k):
     return index//k
-
-
 def Remainder(index, k):
     return index%k
-
 def NumberToPattern(index, k):
 
     NumberToSymbol = {0:'A', 1:'C', 2:'G', 3:'T'} #make dict mapping numbers to nucleotides
@@ -68,7 +61,6 @@ def NumberToPattern(index, k):
     PrefixPattern = NumberToPattern(prefixIndex, k-1)
     PrefixPattern = NumberToPattern(prefixIndex, k-1)
     return PrefixPattern + symbol
-
 def HammingDistance(Pattern, Text):
 
     count = 0
@@ -77,7 +69,6 @@ def HammingDistance(Pattern, Text):
         if Pattern[i] != Text[i]:
             count += 1
     return count
-
 def ApproximateOccurrences(Pattern, Text, d):
 
     approxoccur = []
@@ -87,8 +78,6 @@ def ApproximateOccurrences(Pattern, Text, d):
             Text[i:i+len(Pattern)] == Pattern
             approxoccur.append(str(i))
     return approxoccur
-
-
 def ApproxPatternCount(Text, Pattern, d):
     count = 0
     for i in range(len(Text) - len(Pattern) + 1):
@@ -96,64 +85,90 @@ def ApproxPatternCount(Text, Pattern, d):
             count += 1
     return count
 
-
-
 def MotifEnumeration(clique, k, d):
-
 
     temp_lst = []
     patternprime_lst = []
-    for i in range(1, len(clique)):
-        sub = clique[i]
-        for text in range(len(sub) - k + 1):
-            pattern = sub[text:text+k]
-            neighborhood = Neighbors(pattern, d)
-            for j in range(len(neighborhood)):
-                if neighborhood[j] not in patternprime_lst:
-                    patternprime_lst.append(neighborhood[j])
+    for i in range(0, len(clique)-k+1):
+        #sub = clique[i]
+        sub = clique[i:i+k]
+        # for text in range(len(sub) - k + 1):
+        #     pattern = sub[text:text+k]
+        #neighborhood = Neighbors(pattern, d)
+        neighborhood = Neighbors(sub, d)
+        for j in range(len(neighborhood)):
+            if neighborhood[j] not in patternprime_lst:
+                patternprime_lst.append(neighborhood[j])
 
-    for i in range(len(patternprime_lst)):
-        sub = patternprime_lst[i]
-        subinAll = True
-        for j in range(1, len(clique)):
-            if ApproxPatternCount(clique[j], sub, d) == 0:
-                subinAll = False
-                break
-        if subinAll == True:
-            temp_lst.append(sub)
+    for j in range(0, len(clique)):
+        if clique[j:j+k] in patternprime_lst:
+            temp_lst.append(clique[j:j+k])
 
-    motifs = []
-    for i in range(len(temp_lst)):
-        if temp_lst[i] not in motifs:
-            motifs.append(temp_lst[i])
-    return motifs
+    return list(set(temp_lst))
 
-
-def main(filename):
-    with open(filename) as f:
+def main(filename, outputFile, k):
+    with open(CLIQUES_FILE) as f:
         all = f.readlines()
         all = [x.strip('\n') for x in all]
 
-    k = 6
+    #k = random.randint(3,10)
+
+    #k = 3
     d = 0
-    # enumerate motifs for each clique
-    for i in range(len(all)):
-        line = all[i]
-        clique = re.split(',', line)
-        print ('Clique {}: {}'.format(i+1, MotifEnumeration(clique, k, d)))
-
+    clique = ''.join(all)
+    lst_motifs = MotifEnumeration(clique, k, d)
+    lst_motifs
     # enumerate common motifs across all cliques
-    lst_motifs = []
-    for i in range(len(all)):
-        line = all[i]
-        clique = re.split(',', line)
-        lst_motifs.append(MotifEnumeration(clique, k, d))
-    # remove empty lists in lst_motifs
-    lst_motifs_final = [x for x in lst_motifs if x != []]
-    # set(lst_motifs_final[0]).intersection(*lst_motifs_final)
-    common_motifs = set(lst_motifs_final[0])
-    for lst in lst_motifs_final[1:]:
-        common_motifs.intersection_update(lst)
-    print ((common_motifs))
+    # for i in range(len(all)):
+    #     line = all[i]
+    #     #clique = re.split(',', line)
+    #     lst_motifs = MotifEnumeration(clique, k, d)
 
-#main('sim_data_HAPPY_CLIQUES.cliques')
+    # calculate AT:GC ratio of lst_motifs
+    count_A = 0
+    count_T = 0
+    count_G = 0
+    count_C = 0
+    ratio = 0
+    sum_ratio = 0
+    if lst_motifs != []:
+        for motif in lst_motifs:
+            for nuc in motif:
+                if nuc == 'A':
+                    count_A +=1
+                elif nuc == 'T':
+                    count_T +=1
+                elif nuc == 'G':
+                    count_G +=1
+                elif nuc == 'C':
+                    count_C +=1
+            count_CG = count_C + count_G
+            count_CG
+            count_AT = count_A + count_T
+            count_AT
+            if count_CG != 0:
+                ratio = (count_AT)/(count_CG)
+            # if count_AT != 0:
+            #      ratio = (count_CG)/(count_AT)
+
+            if count_CG == 0 and count_AT >= 1:
+                ratio = 1
+            # if count_AT == 0 and count_CG >= 1:
+            #     ratio = 1
+            sum_ratio += ratio
+        if len(lst_motifs) >= 1:
+            avg_ratio = sum_ratio/len(lst_motifs)
+            print ("AT:GC ratio of k-mer length "+str(k)+" is "+str(round(ratio,2)))
+
+    # remove empty lists in lst_motifs
+    # with open(outputFile, "w") as outF:
+    #     if lst_motifs != []:
+    #         outF.write(",".join(x for x in lst_motifs))
+    # with open(outputFile, "r") as outF:
+    #     motifs = outF.readlines()
+
+HAPPYORSAD = "ALL"
+CLIQUES_FILE = "../data/sim_data_" + HAPPYORSAD + "_CLIQUES2.cliques"
+OUTPUT_FILE = "../data/output_motifs.lstmotifs"
+for k in range(3,8):
+    main(CLIQUES_FILE, OUTPUT_FILE, k)
